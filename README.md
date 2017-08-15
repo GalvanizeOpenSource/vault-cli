@@ -1,5 +1,7 @@
 # Vault CLI
 
+[![npm version](https://badge.fury.io/js/vault-cli.svg)](https://badge.fury.io/js/vault-cli)
+
 CLI for HashiCorp's [Vault](https://www.vaultproject.io/).
 
 #### Assumptions:
