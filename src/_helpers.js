@@ -21,7 +21,7 @@ function authenticate() {
 function read(project, environment, token) {
   return request({
     method: 'GET',
-    uri: `${VAULT_ADDR}/${project}-${environment}`,
+    uri: `${VAULT_ADDR}/v1/secret/${project}-${environment}`,
     headers: { 'X-Vault-Token': token },
     json: true
   });
@@ -30,7 +30,7 @@ function read(project, environment, token) {
 function write(project, environment, token, payload) {
   return request({
     method: 'POST',
-    uri: `${VAULT_ADDR}/${project}-${environment}`,
+    uri: `${VAULT_ADDR}/v1/secret/${project}-${environment}`,
       headers: {
         'X-Vault-Token': token,
         'Content-Type': 'application/json'
@@ -45,8 +45,8 @@ function write(project, environment, token, payload) {
 function getSecrets(project, environment) {
   return new Promise((resolve, reject) => {
     return authenticate()
-    .then((res) => { return read(
-      project, environment, res.auth.client_token); })
+    .then((res) => {
+      return read(project, environment, res.auth.client_token); })
     .then((res) => { resolve(res.data); })
     .catch((err) => { reject(err); });
   });

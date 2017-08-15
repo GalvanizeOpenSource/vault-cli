@@ -11,7 +11,7 @@ CLI for HashiCorp's [Vault](https://www.vaultproject.io/).
 ## Install
 
 ```sh
-$ npm install vault-cli
+$ npm install vault-cli -g
 ```
 
 ## Usage
@@ -19,7 +19,7 @@ $ npm install vault-cli
 Add environment variables:
 
 ```sh
-$ export VAULT_ADDR=YOUR_VAULT_ADDRESS/v1/secret
+$ export VAULT_ADDR=YOUR_VAULT_ADDRESS
 $ export VAULT_AUTH_TOKEN=YOUR_VAULT_TOKEN
 ```
 
