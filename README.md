@@ -1,4 +1,4 @@
-# Vault Node
+# Vault CLI
 
 CLI for HashiCorp's [Vault](https://www.vaultproject.io/).
 
