@@ -25,25 +25,25 @@ $ export VAULT_ADDR=YOUR_VAULT_ADDRESS
 $ export VAULT_AUTH_TOKEN=YOUR_VAULT_TOKEN
 ```
 
-### Help
+#### Help
 
 ```sh
 $ vault-cli help
 ```
 
-### Read ALL Secrets
+#### Read ALL Secrets
 
 ```sh
 $ vault-cli PROJECT ENVIRONMENT read
 ```
 
-### Add a SINGLE Secret
+#### Add a SINGLE Secret
 
 ```sh
 $ vault-cli PROJECT ENVIRONMENT add SECRET_NAME SECRET_VALUE
 ```
 
-### Remove a SINGLE Secret
+#### Remove a SINGLE Secret
 
 ```sh
 $ vault-cli PROJECT ENVIRONMENT remove SECRET_NAME SECRET_VALUE
