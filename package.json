@@ -1,9 +1,13 @@
 {
   "name": "vault-cli",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "CLI for HashiCorp's Vault",
   "author": "Michael Herman",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/GalvanizeOpenSource/vault-cli"
+  },
   "preferGlobal": true,
   "dependencies": {
     "request": "^2.81.0",
