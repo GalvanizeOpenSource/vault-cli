@@ -6,15 +6,24 @@ const path = require('path');
 
 const VAULT_ADDR = process.env.VAULT_ADDR;
 const VAULT_AUTH_TOKEN = process.env.VAULT_AUTH_TOKEN;
+const VAULT_AUTH_METHOD = process.env.VAULT_AUTH_METHOD;
 
 // helpers
 
 function authenticate() {
-  return request({
-    method: 'POST',
-    uri: `${VAULT_ADDR}/v1/auth/github/login`,
-    body: { token: VAULT_AUTH_TOKEN },
-    json: true
+  return new Promise((resolve, reject) => {
+    if (VAULT_AUTH_METHOD === 'github') {
+      return request({
+        method: 'POST',
+        uri: `${VAULT_ADDR}/v1/auth/github/login`,
+        body: { token: VAULT_AUTH_TOKEN },
+        json: true
+      })
+      .then((res) => { resolve(res.auth.client_token); })
+      .catch((err) => { reject(err); });
+    } else {
+      resolve(VAULT_AUTH_TOKEN);
+    }
   });
 }
 
@@ -45,8 +54,8 @@ function write(project, environment, token, payload) {
 function getSecrets(project, environment) {
   return new Promise((resolve, reject) => {
     return authenticate()
-    .then((res) => {
-      return read(project, environment, res.auth.client_token); })
+    .then((token) => {
+      return read(project, environment, token); })
     .then((res) => { resolve(res.data); })
     .catch((err) => { reject(err); });
   });
@@ -57,8 +66,8 @@ function addSecret(project, environment, key, value) {
   return new Promise((resolve, reject) => {
     return authenticate()
     .then((res) => {
-      token = res.auth.client_token;
-      return read(project, environment, res.auth.client_token);
+      token = res;
+      return read(project, environment, token);
     })
     .then((res) => {
       const payload = res.data;
@@ -75,8 +84,8 @@ function removeSecret(project, environment, key, value) {
   return new Promise((resolve, reject) => {
     return authenticate()
     .then((res) => {
-      token = res.auth.client_token;
-      return read(project, environment, res.auth.client_token);
+      token = res;
+      return read(project, environment, token);
     })
     .then((res) => {
       const payload = res.data;
