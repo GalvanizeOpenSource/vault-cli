@@ -41,6 +41,12 @@ $ vault-cli help
 $ vault-cli PROJECT ENVIRONMENT read
 ```
 
+Want to create a *.env* file in the current directory?
+
+```sh
+$ vault-cli PROJECT ENVIRONMENT dotenv
+```
+
 #### Add a SINGLE Secret
 
 ```sh

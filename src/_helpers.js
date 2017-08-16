@@ -97,9 +97,27 @@ function removeSecret(project, environment, key, value) {
   });
 }
 
+function createDotEnv(project, environment) {
+  return new Promise((resolve, reject) => {
+    return authenticate()
+    .then((token) => {
+      return read(project, environment, token); })
+    .then((res) => {
+      const wstream = fs.createWriteStream('.env');
+      for (let key in res.data) {
+        wstream.write(`${key}=${res.data[key]}\n`);
+      }
+      wstream.end();
+      resolve(true);
+    })
+    .catch((err) => { reject(err); });
+  });
+}
+
 
 module.exports = {
   getSecrets,
   addSecret,
-  removeSecret
+  removeSecret,
+  createDotEnv
 };

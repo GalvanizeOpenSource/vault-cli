@@ -1,6 +1,6 @@
 {
   "name": "vault-cli",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "CLI for HashiCorp's Vault",
   "author": "Michael Herman",
   "license": "ISC",

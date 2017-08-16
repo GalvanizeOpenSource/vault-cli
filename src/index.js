@@ -16,6 +16,11 @@ if (!args[0] || !args[1]) {
       .then((res) => { console.log(res); })
       .catch((err) => { console.log(err); });
       break;
+    case 'dotenv':
+      helpers.createDotEnv(args[0], args[1])
+      .then((res) => { console.log('.env Created!'); })
+      .catch((err) => { console.log(err); });
+      break;
     case 'add':
       if (!args[3] || !args[4]) {
         console.log(USAGE_MESSAGE);
