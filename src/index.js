@@ -1,5 +1,7 @@
 #! /usr/bin/env node
 
+'use strict';
+
 const helpers = require('./_helpers');
 const args = process.argv.slice(2);
 

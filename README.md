@@ -1,12 +1,13 @@
 # Vault CLI
 
 [![npm version](https://badge.fury.io/js/vault-cli.svg)](https://badge.fury.io/js/vault-cli)
+[![Build Status](https://travis-ci.org/GalvanizeOpenSource/vault-cli.svg?branch=master)](https://travis-ci.org/GalvanizeOpenSource/vault-cli)
 
 CLI for HashiCorp's [Vault](https://www.vaultproject.io/).
 
 #### Assumptions:
 
-1. Requires Node >= 7.
+1. Requires Node >= 4.8.4.
 1. [GitHub](https://www.vaultproject.io/docs/auth/github.html) and [Token](https://www.vaultproject.io/docs/auth/token.html) are the only supported [Auth Backends](https://www.vaultproject.io/docs/auth/index.html).
 1. Your [secret endpoint](https://www.vaultproject.io/api/index.html#reading-writing-and-listing-secrets) URL is - `VAULT_ADDR/v1/secret/project/environment`.
 

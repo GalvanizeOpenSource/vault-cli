@@ -5,15 +5,22 @@
   "author": "Michael Herman",
   "license": "MIT",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/GalvanizeOpenSource/vault-cli"
+    "type": "git",
+    "url": "https://github.com/GalvanizeOpenSource/vault-cli"
   },
   "preferGlobal": true,
+  "scripts": {
+    "test": "./node_modules/mocha/bin/_mocha"
+  },
+  "bin": {
+    "vault-cli": "./src/index.js"
+  },
   "dependencies": {
     "request": "^2.81.0",
     "request-promise": "^4.2.1"
   },
-  "bin": {
-    "vault-cli": "./src/index.js"
+  "devDependencies": {
+    "chai": "^4.1.1",
+    "mocha": "^3.5.0"
   }
 }
