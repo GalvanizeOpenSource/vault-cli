@@ -16,12 +16,18 @@ if (!args[0] || !args[1]) {
     case 'read':
       helpers.getSecrets(args[0], args[1])
       .then((res) => { console.log(res); })
-      .catch((err) => { console.log(err); });
+      .catch((err) => {
+        console.log(err);
+        throw new Error(err);
+      });
       break;
     case 'dotenv':
       helpers.createDotEnv(args[0], args[1])
       .then((res) => { console.log('.env Created!'); })
-      .catch((err) => { console.log(err); });
+      .catch((err) => {
+        console.log(err);
+        throw new Error(err);
+      });
       break;
     case 'add':
       if (!args[3] || !args[4]) {
@@ -30,7 +36,10 @@ if (!args[0] || !args[1]) {
       }
       helpers.addSecret(args[0], args[1], args[3], args[4])
       .then((res) => { console.log('Secret Added!');  })
-      .catch((err) => { console.log(err); });
+      .catch((err) => {
+        console.log(err);
+        throw new Error(err);
+      });
       break;
     case 'remove':
       if (!args[3] || !args[4]) {
@@ -39,7 +48,10 @@ if (!args[0] || !args[1]) {
       }
       helpers.removeSecret(args[0], args[1], args[3], args[4])
       .then((res) => { console.log('Secret Removed!');  })
-      .catch((err) => { console.log(err); });
+      .catch((err) => { 
+        console.log(err);
+        throw new Error(err);
+      });
       break;
     default:
       console.log(USAGE_MESSAGE);
