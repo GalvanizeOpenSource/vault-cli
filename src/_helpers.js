@@ -23,8 +23,15 @@ function authenticate() {
       })
       .then((res) => { resolve(res.auth.client_token); })
       .catch((err) => { reject(err); });
-    } else {
-      resolve(VAULT_AUTH_TOKEN);
+    } else if (VAULT_AUTH_METHOD === 'token') {
+      return request({
+        method: 'POST',
+        uri: `${VAULT_ADDR}/v1/auth/token/lookup`,
+        body: { token: VAULT_AUTH_TOKEN },
+        json: true
+      })
+      .then((res) => { resolve(VAULT_AUTH_TOKEN); })
+      .catch((err) => { reject(err); });
     }
   });
 }
