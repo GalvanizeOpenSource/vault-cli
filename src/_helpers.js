@@ -13,8 +13,8 @@ const VAULT_AUTH_METHOD = process.env.VAULT_AUTH_METHOD;
 // helpers
 
 function authenticate() {
-  return new Promise((resolve, reject) => {
-    if (VAULT_AUTH_METHOD === 'github') {
+  if (VAULT_AUTH_METHOD === 'github') {
+    return new Promise((resolve, reject) => {
       return request({
         method: 'POST',
         uri: `${VAULT_ADDR}/v1/auth/github/login`,
@@ -23,17 +23,12 @@ function authenticate() {
       })
       .then((res) => { resolve(res.auth.client_token); })
       .catch((err) => { reject(err); });
-    } else if (VAULT_AUTH_METHOD === 'token') {
-      return request({
-        method: 'POST',
-        uri: `${VAULT_ADDR}/v1/auth/token/lookup`,
-        body: { token: VAULT_AUTH_TOKEN },
-        json: true
-      })
-      .then((res) => { resolve(VAULT_AUTH_TOKEN); })
-      .catch((err) => { reject(err); });
-    }
-  });
+    });
+  } else if (VAULT_AUTH_METHOD === 'token') {
+    return new Promise((resolve, reject) => {
+      resolve(VAULT_AUTH_TOKEN);
+    });
+  }
 }
 
 function read(project, environment, token) {
