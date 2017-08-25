@@ -54,8 +54,14 @@ $ vault-cli PROJECT ENVIRONMENT dotenv
 $ vault-cli PROJECT ENVIRONMENT add SECRET_NAME SECRET_VALUE
 ```
 
+#### Update a SINGLE Secret
+
+```sh
+$ vault-cli PROJECT ENVIRONMENT update SECRET_NAME NEW_SECRET_VALUE
+```
+
 #### Remove a SINGLE Secret
 
 ```sh
-$ vault-cli PROJECT ENVIRONMENT remove SECRET_NAME SECRET_VALUE
+$ vault-cli PROJECT ENVIRONMENT remove SECRET_NAME
 ```

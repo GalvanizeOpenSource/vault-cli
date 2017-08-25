@@ -1,8 +1,8 @@
-'use strict';
+'use strict'; // eslint-disable-line
+
 
 const request = require('request-promise');
 const fs = require('fs');
-const path = require('path');
 
 // constants
 
@@ -12,116 +12,155 @@ const VAULT_AUTH_METHOD = process.env.VAULT_AUTH_METHOD;
 
 // helpers
 
-function authenticate() {
+async function authenticate() {
   if (VAULT_AUTH_METHOD === 'github') {
-    return new Promise((resolve, reject) => {
-      return request({
-        method: 'POST',
-        uri: `${VAULT_ADDR}/v1/auth/github/login`,
-        body: { token: VAULT_AUTH_TOKEN },
-        json: true
-      })
-      .then((res) => { resolve(res.auth.client_token); })
-      .catch((err) => { reject(err); });
-    });
+    const options = {
+      method: 'POST',
+      uri: `${VAULT_ADDR}/v1/auth/github/login`,
+      body: { token: VAULT_AUTH_TOKEN },
+      json: true,
+    };
+    try {
+      const response = await request(options);
+      return Promise.resolve(response.auth.client_token);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   } else if (VAULT_AUTH_METHOD === 'token') {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       resolve(VAULT_AUTH_TOKEN);
     });
   }
+  return true;
 }
 
 function read(project, environment, token) {
-  return request({
+  const options = {
     method: 'GET',
     uri: `${VAULT_ADDR}/v1/secret/${project}-${environment}`,
     headers: { 'X-Vault-Token': token },
-    json: true
-  });
+    json: true,
+  };
+  return request(options)
+    .then(res => res)
+    .catch((err) => { throw new Error(err); });
 }
 
 function write(project, environment, token, payload) {
-  return request({
+  const options = {
     method: 'POST',
     uri: `${VAULT_ADDR}/v1/secret/${project}-${environment}`,
-      headers: {
-        'X-Vault-Token': token,
-        'Content-Type': 'application/json'
-      },
-      body: payload,
-      json: true
-  });
+    headers: {
+      'X-Vault-Token': token,
+      'Content-Type': 'application/json',
+    },
+    body: payload,
+    json: true,
+  };
+  return request(options)
+    .then(res => res)
+    .catch((err) => { throw new Error(err); });
+}
+
+function exists(key, obj) {
+  if (!(key in obj)) {
+    return true;
+  }
+  return false;
 }
 
 // public
 
-function getSecrets(project, environment) {
-  return new Promise((resolve, reject) => {
-    return authenticate()
-    .then((token) => {
-      return read(project, environment, token); })
-    .then((res) => { resolve(res.data); })
-    .catch((err) => { reject(err); });
-  });
+async function getSecrets(project, environment) {
+  try {
+    const token = await authenticate();
+    const secrets = await read(project, environment, token);
+    console.log(secrets.data);
+    return secrets.data;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 }
 
-function addSecret(project, environment, key, value) {
-  let token;
-  return new Promise((resolve, reject) => {
-    return authenticate()
-    .then((res) => {
-      token = res;
-      return read(project, environment, token);
-    })
-    .then((res) => {
-      const payload = res.data;
+async function createDotEnv(project, environment) {
+  try {
+    const token = await authenticate();
+    const secrets = await read(project, environment, token);
+    const wstream = fs.createWriteStream('.env');
+    Object.keys(secrets.data).forEach((key) => {
+      wstream.write(`${key}=${secrets.data[key]}\n`);
+    });
+    wstream.end();
+    console.log('.env created!');
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+async function addSecret(project, environment, key, value) {
+  try {
+    const token = await authenticate();
+    const secrets = await read(project, environment, token);
+    const payload = secrets.data;
+    if (exists(key, payload)) {
       payload[key] = value;
-      return write(project, environment, token, payload);
-    })
-    .then(() => { resolve(true); })
-    .catch((err) => { reject(err); });
-  });
+      await write(project, environment, token, payload);
+      console.log('Secret added!');
+      return true;
+    }
+    console.log('That secret is already used. Try again.');
+    return false;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 }
 
-function removeSecret(project, environment, key, value) {
-  let token;
-  return new Promise((resolve, reject) => {
-    return authenticate()
-    .then((res) => {
-      token = res;
-      return read(project, environment, token);
-    })
-    .then((res) => {
-      const payload = res.data;
+async function updateSecret(project, environment, key, value) {
+  try {
+    const token = await authenticate();
+    const secrets = await read(project, environment, token);
+    const payload = secrets.data;
+    if (!exists(key, payload)) {
+      payload[key] = value;
+      await write(project, environment, token, payload);
+      console.log('Secret updated!');
+      return true;
+    }
+    console.log('That secret does not exist. Try again.');
+    return false;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+async function removeSecret(project, environment, key) {
+  try {
+    const token = await authenticate();
+    const secrets = await read(project, environment, token);
+    const payload = secrets.data;
+    if (!exists(key, payload)) {
       delete payload[key];
-      return write(project, environment, token, payload);
-    })
-    .then(() => { resolve(true); })
-    .catch((err) => { reject(err); });
-  });
+      await write(project, environment, token, payload);
+      console.log('Secret removed!');
+      return true;
+    }
+    console.log('That secret does not exist. Try again.');
+    return false;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 }
-
-function createDotEnv(project, environment) {
-  return new Promise((resolve, reject) => {
-    return authenticate()
-    .then((token) => {
-      return read(project, environment, token); })
-    .then((res) => {
-      const wstream = fs.createWriteStream('.env');
-      for (let key in res.data) {
-        wstream.write(`${key}=${res.data[key]}\n`);
-      }
-      wstream.end();
-      resolve(true);
-    })
-    .catch((err) => { reject(err); });
-  });
-}
-
 
 module.exports = {
   getSecrets,
+  createDotEnv,
   addSecret,
+  updateSecret,
   removeSecret,
-  createDotEnv
 };
