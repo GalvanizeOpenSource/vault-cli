@@ -7,7 +7,7 @@ CLI for HashiCorp's [Vault](https://www.vaultproject.io/).
 
 #### Assumptions:
 
-1. Requires Node >= 4.8.4.
+1. Requires Node >= 7.10.1. If you need support for Node v4.8.4 and above, use version [0.0.12](https://travis-ci.org/GalvanizeOpenSource/vault-cli/builds/268497240) of the Vault CLI - `npm install vault-cli@0.0.12`.
 1. [GitHub](https://www.vaultproject.io/docs/auth/github.html) and [Token](https://www.vaultproject.io/docs/auth/token.html) are the only supported [Auth Backends](https://www.vaultproject.io/docs/auth/index.html).
 1. Your [secret endpoint](https://www.vaultproject.io/api/index.html#reading-writing-and-listing-secrets) URL is - `VAULT_ADDR/v1/secret/project/environment`.
 
